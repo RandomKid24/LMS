@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,22 +28,28 @@
             cursor: pointer;
         }
 
-        .current-month-year {
+        .current-month-year-container {
+            text-align: center; /* Center align text */
+            margin-bottom: 1rem; /* Spacing between the container and the table */
+        }
+
+        .current-month,
+        .current-year {
             font-size: 1.5rem;
             font-weight: bold;
-            margin-bottom: 1rem;
             cursor: pointer;
             display: inline-block;
             padding: 0.5rem 1rem;
-            background-color: #4a90e2;
-            color: #ffffff;
+            background-color: transparent; /* Transparent background */
+            color: #4a90e2; /* Blue color */
             border: none;
             border-radius: 0.25rem;
-            transition: background-color 0.3s ease;
+            transition: color 0.3s ease;
         }
 
-        .current-month-year:hover {
-            background-color: #357bd8;
+        .current-month:hover,
+        .current-year:hover {
+            color: #357bd8; /* Darker blue color on hover */
         }
     </style>
 </head>
@@ -76,8 +80,9 @@
         <!-- Apply Leave Section -->
         <div class="calendar-container shadow-lg">
             <h2 class="text-xl font-semibold mb-2">Apply Leave</h2>
-            <div class="flex items-center justify-between mb-4">
-                <span id="currentMonthYear" class="current-month-year"></span>
+            <div class="current-month-year-container">
+                <span id="currentMonth" class="current-month"></span>
+                <span id="currentYear" class="current-year"></span>
             </div>
             <table id="calendarTable" class="w-full text-center">
                 <thead>
@@ -116,7 +121,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const currentMonthYearDisplay = document.getElementById('currentMonthYear');
+            const currentMonthDisplay = document.getElementById('currentMonth');
+            const currentYearDisplay = document.getElementById('currentYear');
             const calendarBody = document.querySelector('tbody');
 
             let currentMonth = new Date().getMonth(); // Get current month (0 - January, 1 - February, ..., 11 - December)
@@ -150,19 +156,26 @@
                         }
                     }
                 }
-                currentMonthYearDisplay.textContent = `${months[month]} ${year}`;
+                currentMonthDisplay.textContent = months[month];
+                currentYearDisplay.textContent = year;
             }
 
             renderCalendar(currentMonth, currentYear);
 
             // Event listener for current month/year display
-            currentMonthYearDisplay.addEventListener('click', function () {
+            currentMonthDisplay.addEventListener('click', function () {
                 // Increment month and wrap around at December
                 currentMonth++;
                 if (currentMonth > 11) {
                     currentMonth = 0;
                     currentYear++;
                 }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            currentYearDisplay.addEventListener('click', function () {
+                // Increment year
+                currentYear++;
                 renderCalendar(currentMonth, currentYear);
             });
 
