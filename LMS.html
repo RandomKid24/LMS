@@ -51,6 +51,37 @@
         .current-year:hover {
             color: #357bd8; /* Darker blue color on hover */
         }
+
+        .icon {
+            fill: none; /* No fill for the icon */
+            stroke: #4a90e2; /* Blue color for icon stroke */
+            stroke-width: 2; /* Stroke width */
+            width: 1.5rem; /* Adjust icon size */
+            height: 1.5rem;
+            margin: 0 0.5rem; /* Spacing around icons */
+            cursor: pointer;
+            transition: stroke 0.3s ease;
+        }
+
+        .icon:hover {
+            stroke: #357bd8; /* Darker blue color on hover */
+        }
+
+        .calendar-cell {
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .calendar-cell.start-date,
+        .calendar-cell.end-date,
+        .calendar-cell.selected {
+            background-color: #4a90e2; /* Blue color for selected dates */
+            color: #fff; /* White text color for selected dates */
+        }
+
+        .calendar-cell.in-range {
+            background-color: #aed9ff; /* Light blue color for dates in range */
+        }
     </style>
 </head>
 
@@ -80,9 +111,19 @@
         <!-- Apply Leave Section -->
         <div class="calendar-container shadow-lg">
             <h2 class="text-xl font-semibold mb-2">Apply Leave</h2>
-            <div class="current-month-year-container">
+            <div class="current-month-year-container flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-left interactive"
+                    id="prevMonth">
+                    <path
+                        d="M15 18l-6-6 6-6" />
+                </svg>
                 <span id="currentMonth" class="current-month"></span>
                 <span id="currentYear" class="current-year"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-right interactive"
+                    id="nextMonth">
+                    <path
+                        d="M9 6l6 6-6 6" />
+                </svg>
             </div>
             <table id="calendarTable" class="w-full text-center">
                 <thead>
@@ -133,6 +174,9 @@
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
 
+            let startDate = null;
+            let endDate = null;
+
             function renderCalendar(month, year) {
                 const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get number of days in the month
                 const firstDay = new Date(year, month, 1).getDay(); // Get the first day of the month (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
@@ -150,7 +194,7 @@
                             break;
                         } else {
                             const cell = row.insertCell();
-                            cell.classList.add('p-2');
+                            cell.classList.add('p-2', 'calendar-cell');
                             cell.textContent = date;
                             date++;
                         }
@@ -162,9 +206,17 @@
 
             renderCalendar(currentMonth, currentYear);
 
-            // Event listener for current month/year display
-            currentMonthDisplay.addEventListener('click', function () {
-                // Increment month and wrap around at December
+            // Event listeners for navigation icons
+            document.getElementById('prevMonth').addEventListener('click', function () {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', function () {
                 currentMonth++;
                 if (currentMonth > 11) {
                     currentMonth = 0;
@@ -173,11 +225,44 @@
                 renderCalendar(currentMonth, currentYear);
             });
 
-            currentYearDisplay.addEventListener('click', function () {
-                // Increment year
-                currentYear++;
-                renderCalendar(currentMonth, currentYear);
+            // Event listener for selecting dates
+            calendarBody.addEventListener('click', function (event) {
+                const target = event.target;
+                if (target.classList.contains('calendar-cell')) {
+                    const selectedDate = parseInt(target.textContent);
+                    if (!startDate) {
+                        startDate = selectedDate;
+                        target.classList.add('start-date');
+                    } else if (!endDate) {
+                        endDate = selectedDate;
+                        target.classList.add('end-date');
+                        markDatesInRange(startDate, endDate);
+                    } else {
+                        clearSelection();
+                        startDate = selectedDate;
+                        target.classList.add('start-date');
+                    }
+                }
             });
+
+            function markDatesInRange(start, end) {
+                const cells = document.querySelectorAll('.calendar-cell');
+                cells.forEach(cell => {
+                    const date = parseInt(cell.textContent);
+                    if (date > start && date < end) {
+                        cell.classList.add('in-range');
+                    }
+                });
+            }
+
+            function clearSelection() {
+                const selectedCells = document.querySelectorAll('.calendar-cell.start-date, .calendar-cell.end-date, .calendar-cell.in-range');
+                selectedCells.forEach(cell => {
+                    cell.classList.remove('start-date', 'end-date', 'in-range');
+                });
+                startDate = null;
+                endDate = null;
+            }
 
             // Submit leave functionality (dummy example)
             const submitLeaveButton = document.getElementById('submitLeave');
@@ -186,6 +271,7 @@
                 const leaveType = document.getElementById('leave-type').value;
                 const reason = document.getElementById('reason').value;
                 alert(`Leave Submitted:\nMethod: ${method}\nLeave Type: ${leaveType}\nReason: ${reason}`);
+                clearSelection();
             });
         });
     </script>
