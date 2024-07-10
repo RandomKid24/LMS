@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+        }
+
+        .calendar-container {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .applied-leave {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .interactive {
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-right: 1rem; /* Adjust spacing between month and year */
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 5px 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+    <div class="container mx-auto px-4">
+        <h1 class="text-2xl font-bold text-white mb-4">Leave Management</h1>
+
+        <!-- Applied Leaves Section -->
+        <div class="applied-leave shadow-lg">
+            <h2 class="text-xl font-semibold mb-2">Applied Leaves</h2>
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/50" alt="Profile" class="rounded-full mr-2">
+                    <div>
+                        <p class="font-semibold">RH - Doljatra (Dol Purnima)</p>
+                        <p>Thu, 01 Mar'18 (1 Day)</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-green-500 font-semibold mr-2">Approved</span>
+                    <button class="text-red-500">X</button>
+                    <button class="text-blue-500 ml-2">&#9998;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apply Leave Section -->
+        <div class="calendar-container shadow-lg">
+            <h2 class="text-xl font-semibold mb-2">Apply Leave</h2>
+            <div class="flex items-center justify-between mb-4">
+                <div class="dropdown">
+                    <button id="monthDropdown" class="text-gray-700 font-semibold interactive">January</button>
+                    <div class="dropdown-content" id="monthDropdownContent">
+                        <a href="#">January</a>
+                        <a href="#">February</a>
+                        <a href="#">March</a>
+                        <a href="#">April</a>
+                        <a href="#">May</a>
+                        <a href="#">June</a>
+                        <a href="#">July</a>
+                        <a href="#">August</a>
+                        <a href="#">September</a>
+                        <a href="#">October</a>
+                        <a href="#">November</a>
+                        <a href="#">December</a>
+                    </div>
+                </div>
+                <span>,</span>
+                <div class="dropdown">
+                    <button id="yearDropdown" class="text-gray-700 font-semibold interactive">2024</button>
+                    <div class="dropdown-content" id="yearDropdownContent">
+                        <!-- You can dynamically populate years here if needed -->
+                        <a href="#">2022</a>
+                        <a href="#">2023</a>
+                        <a href="#">2024</a>
+                        <a href="#">2025</a>
+                    </div>
+                </div>
+            </div>
+            <table id="calendarTable" class="w-full text-center">
+                <thead>
+                    <tr>
+                        <th class="p-2">Mon</th>
+                        <th class="p-2">Tue</th>
+                        <th class="p-2">Wed</th>
+                        <th class="p-2">Thu</th>
+                        <th class="p-2">Fri</th>
+                        <th class="p-2">Sat</th>
+                        <th class="p-2">Sun</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Calendar rows will be dynamically generated by JavaScript -->
+                </tbody>
+            </table>
+            <div class="mt-4">
+                <label for="method" class="block text-gray-700">Method</label>
+                <select id="method" class="block w-full mt-1 p-2 border rounded">
+                    <option>Online</option>
+                    <option>Offline</option>
+                </select>
+                <label for="leave-type" class="block text-gray-700 mt-4">Leave Type</label>
+                <select id="leave-type" class="block w-full mt-1 p-2 border rounded">
+                    <option>RH</option>
+                    <option>PL</option>
+                    <option>SL</option>
+                </select>
+                <label for="reason" class="block text-gray-700 mt-4">Reason</label>
+                <input type="text" id="reason" class="block w-full mt-1 p-2 border rounded" placeholder="Reason">
+                <button id="submitLeave" class="block w-full bg-orange-500 text-white mt-4 p-2 rounded">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        
+            const currentMonthDisplay = document.getElementById('monthDropdown');
+            const currentYearDisplay = document.getElementById('yearDropdown');
+            const monthDropdownContent = document.getElementById('monthDropdownContent');
+            const yearDropdownContent = document.getElementById('yearDropdownContent');
+            const calendarBody = document.querySelector('tbody');
+
+            let currentMonth = 0; // January is 0 (zero-based index)
+            let currentYear = 2024;
+
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            function renderCalendar(month, year) {
+                const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get number of days in the month
+                const firstDay = new Date(year, month, 1).getDay(); // Get the first day of the month (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
+
+                calendarBody.innerHTML = ''; // Clear previous calendar
+
+                let date = 1;
+                for (let i = 0; i < 6; i++) {
+                    const row = calendarBody.insertRow();
+                    for (let j = 0; j < 7; j++) {
+                        if (i === 0 && j < firstDay) {
+                            const cell = row.insertCell();
+                            cell.classList.add('p-2');
+                        } else if (date > daysInMonth) {
+                            break;
+                        } else {
+                            const cell = row.insertCell();
+                            cell.classList.add('p-2');
+                            cell.textContent = date;
+                            date++;
+                        }
+                    }
+                }
+                currentMonthDisplay.textContent = `${months[month]}`;
+                currentYearDisplay.textContent = `${year}`;
+            }
+
+            renderCalendar(currentMonth, currentYear);
+
+            // Toggle dropdown menu for months
+            currentMonthDisplay.addEventListener('click', function () {
+                monthDropdownContent.classList.toggle('hidden');
+            });
+
+            // Toggle dropdown menu for years
+            currentYearDisplay.addEventListener('click', function () {
+                yearDropdownContent.classList.toggle('hidden');
+            });
+
+            // Event listeners for month dropdown
+            months.forEach((month, index) => {
+                const monthLink = document.createElement('a');
+                monthLink.href = '#';
+                monthLink.textContent = month;
+                monthLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    currentMonth = index;
+                    renderCalendar(currentMonth, currentYear);
+                    monthDropdownContent.classList.add('hidden'); // Close dropdown after selection
+                });
+                monthDropdownContent.appendChild(monthLink);
+            });
+
+            // Event listeners for year dropdown
+            for (let year = 2022; year <= 2025; year++) { // Adjust as needed
+                const yearLink = document.createElement('a');
+                yearLink.href = '#';
+                yearLink.textContent = year;
+                yearLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    currentYear = year;
+                    renderCalendar(currentMonth, currentYear);
+                    yearDropdownContent.classList.add('hidden'); // Close dropdown after selection
+                });
+                yearDropdownContent.appendChild(yearLink);
+            }
+
+            // Submit leave functionality (dummy example)
+            const submitLeaveButton = document.getElementById('submitLeave');
+            submitLeaveButton.addEventListener('click', function () {
+                const method = document.getElementById('method').value;
+                const leaveType = document.getElementById('leave-type').value;
+                const reason = document.getElementById('reason').value;
+                alert(`Leave Submitted:\nMethod: ${method}\nLeave Type: ${leaveType}\nReason: ${reason}`);
+            });
+        });
+    </script>
+</body>
+
+</html>
