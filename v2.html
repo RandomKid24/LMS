@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Leave Management Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Tailwind CSS for additional styling -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles can go here */
+        .calendar {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .calendar .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .calendar .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar .prev,
+        .calendar .next {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .calendar .prev:hover,
+        .calendar .next:hover {
+            background-color: #ddd;
+        }
+
+        .calendar .days {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 2px;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .calendar .day {
+            padding: 12px 0;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .calendar .day:hover {
+            background-color: #e2e8f0;
+        }
+
+        .calendar .weekend {
+            color: red;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-gray-100">
+            <div class="p-6">
+                <div class="text-2xl font-semibold">
+                    <i class="fas fa-user"></i> User Dashboard
+                </div>
+                <nav class="mt-6">
+                    <a href="#leave-form" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-calendar-plus"></i> Apply Leave</a>
+                    <a href="#applied-leaves" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-clipboard-list"></i> Applied Leaves</a>
+                    <a href="#calendar" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-calendar"></i> Calendar</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Dashboard Header -->
+            <header class="bg-gray-900 text-gray-100 p-4">
+                <div class="container mx-auto">
+                    <div class="text-xl">Welcome to Aureole Leave Management System</div>
+                </div>
+            </header>
+
+            <!-- Apply Leave Form -->
+            <section id="leave-form" class="py-10">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-semibold mb-4">Apply for Leave</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="start-date" class="block mb-2 font-medium">Start Date</label>
+                                <input id="start-date" type="date" class="form-control">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label for="end-date" class="block mb-2 font-medium">End Date</label>
+                                <input id="end-date" type="date" class="form-control">
+                            </div>
+                            <div class="form-group mt-4">
+                                <label for="reason" class="block mb-2 font-medium">Reason for Leave</label>
+                                <textarea id="reason" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="mt-4 btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applied Leaves Section -->
+            <section id="applied-leaves" class="py-10">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-semibold mb-4">Applied Leaves</h2>
+                        <table class="table">
+                            <thead class="bg-gray-200 text-gray-700">
+                                <tr>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Reason</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-07-01</td>
+                                    <td>2024-07-05</td>
+                                    <td>Medical</td>
+                                    <td>Approved</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calendar Section -->
+            <section id="calendar" class="py-10">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="calendar">
+                            <div class="header bg-green-500 text-white py-2 rounded-t-lg">
+                                <div class="navigation flex justify-between items-center px-4">
+                                    <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
+                                    <div class="month-year text-lg font-semibold"></div>
+                                    <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
+                                </div>
+                            </div>
+                            <div class="days grid grid-cols-7 gap-1 py-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and Font Awesome JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+    <script>
+        // Initialize calendar with current month and year
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        // Function to update calendar when month or year changes
+        function updateCalendar() {
+            let monthYearText = `${getMonthName(currentMonth)} ${currentYear}`;
+            document.querySelector('.calendar .month-year').textContent = monthYearText;
+
+            let daysElement = document.querySelector('.calendar .days');
+            daysElement.innerHTML = '';
+
+            // Get the first day of the current month
+            let firstDay = new Date(currentYear, currentMonth, 1);
+            let startingDay = firstDay.getDay();
+
+            // Get number of days in the current month
+            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Create day elements for the calendar
+            for (let i = 0; i < startingDay; i++) {
+                let emptyDay = document.createElement('div');
+                emptyDay.classList.add('day', 'text-center', 'py-2', 'text-gray-400');
+                daysElement.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dayElement = document.createElement('div');
+                dayElement.classList.add('day', 'text-center', 'py-2', 'cursor-pointer', 'transition', 'duration-300', 'ease-in-out', 'border', 'border-transparent', 'hover:bg-gray-200');
+                dayElement.textContent = day;
+                dayElement.addEventListener('click', function () {
+                    // Update selected date in form fields
+                    let selectedDate = new Date(currentYear, currentMonth, day);
+                    let formattedDate = selectedDate.toISOString().substr(0, 10);
+                    document.getElementById('start-date').value = formattedDate;
+                    document.getElementById('end-date').value = formattedDate;
+                });
+                daysElement.appendChild(dayElement);
+            }
+        }
+
+        // Function to get month name from index
+        function getMonthName(monthIndex) {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            return months[monthIndex];
+        }
+
+        // Function to go to previous month
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendar();
+        }
+
+        // Function to go to next month
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar();
+        }
+
+        // Attach click event listeners to navigation buttons
+        document.querySelector('.calendar .prev').addEventListener('click', prevMonth);
+        document.querySelector('.calendar .next').addEventListener('click', nextMonth);
+
+        // Initial calendar update
+        updateCalendar();
+    </script>
+</body>
+
+</html>
