@@ -66,6 +66,10 @@
             background-color: #e2e8f0;
         }
 
+        .calendar .selected-range {
+            background-color: #bee3f8; /* Light blue background for selected range */
+        }
+
         .calendar .weekend {
             color: red;
         }
@@ -179,6 +183,10 @@
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
 
+        // Variables to store selected start and end dates
+        let startDate = null;
+        let endDate = null;
+
         // Function to update calendar when month or year changes
         function updateCalendar() {
             let monthYearText = `${getMonthName(currentMonth)} ${currentYear}`;
@@ -205,15 +213,73 @@
                 let dayElement = document.createElement('div');
                 dayElement.classList.add('day', 'text-center', 'py-2', 'cursor-pointer', 'transition', 'duration-300', 'ease-in-out', 'border', 'border-transparent', 'hover:bg-gray-200');
                 dayElement.textContent = day;
+
+                // Highlight selected range of dates
+                if (startDate && endDate && day >= startDate.getDate() && day <= endDate.getDate()) {
+                    dayElement.classList.add('selected-range');
+                }
+
+                // Highlight today's date
+                if (currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day === currentDate.getDate()) {
+                    dayElement.classList.add('bg-green-200', 'rounded-full');
+                }
+
                 dayElement.addEventListener('click', function () {
-                    // Update selected date in form fields
-                    let selectedDate = new Date(currentYear, currentMonth, day);
-                    let formattedDate = selectedDate.toISOString().substr(0, 10);
-                    document.getElementById('start-date').value = formattedDate;
-                    document.getElementById('end-date').value = formattedDate;
+                    handleDateSelection(day);
                 });
+
                 daysElement.appendChild(dayElement);
             }
+        }
+
+        // Function to handle date selection
+        function handleDateSelection(day) {
+            let selectedDate = new Date(currentYear, currentMonth, day);
+
+            if (!startDate || (startDate && endDate)) {
+                // Selecting start date or resetting selection
+                startDate = selectedDate;
+                endDate = null;
+            } else if (startDate && !endDate && selectedDate > startDate) {
+                // Selecting end date
+                endDate = selectedDate;
+            } else if (startDate && endDate && selectedDate < startDate) {
+                // Switching start date
+                startDate = selectedDate;
+            } else if (startDate && endDate && selectedDate >= startDate) {
+                // Resetting selection
+                startDate = selectedDate;
+                endDate = null;
+            }
+
+            updateCalendar();
+            updateLeaveForm();
+        }
+
+        // Function to update the Leave Form fields with selected dates
+        function updateLeaveForm() {
+            let startDateInput = document.getElementById('start-date');
+            let endDateInput = document.getElementById('end-date');
+
+            if (startDate) {
+                startDateInput.value = formatDate(startDate);
+            } else {
+                startDateInput.value = '';
+            }
+
+            if (endDate) {
+                endDateInput.value = formatDate(endDate);
+            } else {
+                endDateInput.value = '';
+            }
+        }
+
+        // Function to format date as YYYY-MM-DD
+        function formatDate(date) {
+            let year = date.getFullYear();
+            let month = (date.getMonth() + 1).toString().padStart(2, '0');
+            let day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         // Function to get month name from index
