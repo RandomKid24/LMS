@@ -283,22 +283,34 @@
 
         // Handle day click event to select start and end dates
         function handleDayClick(day) {
-            let selectedDate = new Date(currentYear, currentMonth, day);
+    let selectedDate = new Date(currentYear, currentMonth, day);
 
-            if (!startDate || (startDate && endDate)) {
-                startDate = selectedDate;
-                endDate = null;
-            } else if (selectedDate < startDate) {
-                startDate = selectedDate;
-            } else {
-                endDate = selectedDate;
-            }
-
-            document.getElementById('start-date').value = startDate ? startDate.toISOString().split('T')[0] : '';
-            document.getElementById('end-date').value = endDate ? endDate.toISOString().split('T')[0] : '';
-
-            updateCalendar();
+    if (!startDate) {
+        startDate = selectedDate;
+        document.getElementById('start-date').value = `${selectedDate.getFullYear()}-${padZero(selectedDate.getMonth() + 1)}-${padZero(selectedDate.getDate())}`;
+    } else if (!endDate) {
+        if (selectedDate < startDate) {
+            endDate = startDate;
+            startDate = selectedDate;
+        } else {
+            endDate = selectedDate;
         }
+        document.getElementById('start-date').value = `${startDate.getFullYear()}-${padZero(startDate.getMonth() + 1)}-${padZero(startDate.getDate())}`;
+        document.getElementById('end-date').value = `${endDate.getFullYear()}-${padZero(endDate.getMonth() + 1)}-${padZero(endDate.getDate())}`;
+    } else {
+        startDate = selectedDate;
+        endDate = null;
+        document.getElementById('start-date').value = `${startDate.getFullYear()}-${padZero(startDate.getMonth() + 1)}-${padZero(startDate.getDate())}`;
+        document.getElementById('end-date').value = '';
+    }
+
+    updateCalendar();
+}
+
+// Helper function to pad zero to single digit numbers
+function padZero(num) {
+    return (num < 10 ? '0' : '') + num;
+}
 
         // Function to get month name
         function getMonthName(monthIndex) {
