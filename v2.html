@@ -125,6 +125,22 @@
                 </div>
             </header>
 
+            <!-- Leave Summary Section -->
+            <section id="leave-summary" class="py-6">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6 flex justify-around items-center">
+                        <div>
+                            <h2 class="text-xl font-semibold">Remaining Leaves</h2>
+                            <p id="remaining-leaves" class="text-3xl font-bold text-green-500">10</p>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold">Used Leaves</h2>
+                            <p id="used-leaves" class="text-3xl font-bold text-red-500">5</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Apply Leave Form -->
             <section id="leave-form" class="py-10">
                 <div class="container mx-auto px-4">
@@ -210,25 +226,19 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-
-        // Variables to store selected start and end dates
         let startDate = null;
         let endDate = null;
 
-        // Function to update calendar when month or year changes
         function updateCalendar() {
-            let monthYearText = `${getMonthName(currentMonth)} ${currentYear}`;
-            document.querySelector('.calendar .month-year').textContent = monthYearText;
-
-            let daysElement = document.querySelector('.calendar .days');
+            const daysElement = document.querySelector('.calendar .days');
             daysElement.innerHTML = '';
 
-            // Get the first day of the current month
-            let firstDay = new Date(currentYear, currentMonth, 1);
-            let startingDay = firstDay.getDay();
+            const monthYearElement = document.querySelector('.calendar .month-year');
+            monthYearElement.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
 
-            // Get number of days in the current month
-            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const startingDay = firstDay.getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
             // Populate calendar days
             for (let i = 0; i < startingDay; i++) {
