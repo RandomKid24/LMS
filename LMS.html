@@ -4,276 +4,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leave Management System</title>
+    <title>User Leave Management Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- Tailwind CSS for additional styling -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+        /* Custom styles can go here */
+        .calendar {
+            max-width: 400px;
+            margin: auto;
         }
 
-        .calendar-container {
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            padding: 1rem;
-        }
-
-        .applied-leave {
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .interactive {
-            cursor: pointer;
-        }
-
-        .current-month-year-container {
-            text-align: center; /* Center align text */
-            margin-bottom: 1rem; /* Spacing between the container and the table */
-        }
-
-        .current-month,
-        .current-year {
-            font-size: 1.5rem;
+        .calendar .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
             font-weight: bold;
+        }
+
+        .calendar .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar .prev,
+        .calendar .next {
             cursor: pointer;
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: transparent; /* Transparent background */
-            color: #4a90e2; /* Blue color */
-            border: none;
-            border-radius: 0.25rem;
-            transition: color 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
-        .current-month:hover,
-        .current-year:hover {
-            color: #357bd8; /* Darker blue color on hover */
+        .calendar .prev:hover,
+        .calendar .next:hover {
+            background-color: #ddd;
         }
 
-        .icon {
-            fill: none; /* No fill for the icon */
-            stroke: #4a90e2; /* Blue color for icon stroke */
-            stroke-width: 2; /* Stroke width */
-            width: 1.5rem; /* Adjust icon size */
-            height: 1.5rem;
-            margin: 0 0.5rem; /* Spacing around icons */
+        .calendar .days {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 2px;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .calendar .day {
+            padding: 12px 0;
+            text-align: center;
             cursor: pointer;
-            transition: stroke 0.3s ease;
+            transition: background-color 0.3s ease;
+            border: 1px solid transparent;
         }
 
-        .icon:hover {
-            stroke: #357bd8; /* Darker blue color on hover */
+        .calendar .day:hover {
+            background-color: #e2e8f0;
         }
 
-        .calendar-cell {
-            cursor: pointer;
-            padding: 0.5rem;
+        .calendar .selected-range {
+            background-color: #bee3f8;
+            /* Light blue background for selected range */
         }
 
-        .calendar-cell.start-date,
-        .calendar-cell.end-date,
-        .calendar-cell.selected {
-            background-color: #4a90e2; /* Blue color for selected dates */
-            color: #fff; /* White text color for selected dates */
+        .calendar .weekend {
+            color: red;
         }
 
-        .calendar-cell.in-range {
-            background-color: #aed9ff; /* Light blue color for dates in range */
+        .calendar .start-date,
+        .calendar .end-date {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .calendar .day-names {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            text-align: center;
+            font-weight: bold;
+            padding: 5px 0;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center min-h-screen">
-    <div class="container mx-auto px-4">
-        <h1 class="text-2xl font-bold text-white mb-4">Leave Management</h1>
-
-        <!-- Applied Leaves Section -->
-        <div class="applied-leave shadow-lg">
-            <h2 class="text-xl font-semibold mb-2">Applied Leaves</h2>
-            <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center">
-                    <img src="https://via.placeholder.com/50" alt="Profile" class="rounded-full mr-2">
-                    <div>
-                        <p class="font-semibold">RH - Doljatra (Dol Purnima)</p>
-                        <p>Thu, 01 Mar'18 (1 Day)</p>
-                    </div>
+<body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-gray-100">
+            <div class="p-6">
+                <div class="text-2xl font-semibold">
+                    <i class="fas fa-user"></i> User Dashboard
                 </div>
-                <div class="flex items-center">
-                    <span class="text-green-500 font-semibold mr-2">Approved</span>
-                    <button class="text-red-500">X</button>
-                    <button class="text-blue-500 ml-2">&#9998;</button>
-                </div>
+                <nav class="mt-6">
+                    <a href="#leave-form"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-calendar-plus"></i> Apply Leave</a>
+                    <a href="#applied-leaves"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-clipboard-list"></i> Applied Leaves</a>
+                    <a href="#calendar"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-calendar"></i> Calendar</a>
+                </nav>
             </div>
         </div>
 
-        <!-- Apply Leave Section -->
-        <div class="calendar-container shadow-lg">
-            <h2 class="text-xl font-semibold mb-2">Apply Leave</h2>
-            <div class="current-month-year-container flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-left interactive"
-                    id="prevMonth">
-                    <path
-                        d="M15 18l-6-6 6-6" />
-                </svg>
-                <span id="currentMonth" class="current-month"></span>
-                <span id="currentYear" class="current-year"></span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon icon-right interactive"
-                    id="nextMonth">
-                    <path
-                        d="M9 6l6 6-6 6" />
-                </svg>
-            </div>
-            <table id="calendarTable" class="w-full text-center">
-                <thead>
-                    <tr>
-                        <th class="p-2">Mon</th>
-                        <th class="p-2">Tue</th>
-                        <th class="p-2">Wed</th>
-                        <th class="p-2">Thu</th>
-                        <th class="p-2">Fri</th>
-                        <th class="p-2">Sat</th>
-                        <th class="p-2">Sun</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Calendar rows will be dynamically generated by JavaScript -->
-                </tbody>
-            </table>
-            <div class="mt-4">
-                <label for="method" class="block text-gray-700">Method</label>
-                <select id="method" class="block w-full mt-1 p-2 border rounded">
-                    <option>Online</option>
-                    <option>Offline</option>
-                </select>
-                <label for="leave-type" class="block text-gray-700 mt-4">Leave Type</label>
-                <select id="leave-type" class="block w-full mt-1 p-2 border rounded">
-                    <option>RH</option>
-                    <option>PL</option>
-                    <option>SL</option>
-                </select>
-                <label for="reason" class="block text-gray-700 mt-4">Reason</label>
-                <input type="text" id="reason" class="block w-full mt-1 p-2 border rounded" placeholder="Reason">
-                <button id="submitLeave" class="block w-full bg-orange-500 text-white mt-4 p-2 rounded">Submit</button>
-            </div>
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Dashboard Header -->
+            <header class="bg-gray-900 text-gray-100 p-4">
+                <div class="container mx-auto">
+                    <div class="text-xl">Welcome to Aureole Leave Management System</div>
+                </div>
+            </header>
+
+            <!-- Leave Summary Section -->
+            <section id="leave-summary" class="py-6">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6 flex justify-around items-center">
+                        <div>
+                            <h2 class="text-xl font-semibold">Remaining Leaves</h2>
+                            <p id="remaining-leaves" class="text-3xl font-bold text-green-500">10</p>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold">Used Leaves</h2>
+                            <p id="used-leaves" class="text-3xl font-bold text-red-500">5</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apply Leave Form -->
+            <section id="leave-form" class="py-10">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-semibold mb-4">Apply for Leave</h2>
+                        <form id="leave-form">
+                            <div class="calendar-container mb-4">
+                                <section id="calendar" class="py-10">
+                                    <div class="calendar">
+                                        <div class="header bg-green-500 text-white py-2 rounded-t-lg">
+                                            <div class="navigation flex justify-between items-center px-4">
+                                                <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
+                                                <div class="month-year text-lg font-semibold"></div>
+                                                <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="day-names">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="days grid grid-cols-7 gap-1 py-2"></div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="form-group">
+                                <label for="start-date" class="block mb-2 font-medium">Start Date</label>
+                                <input type="text" id="start-date" class="form-control" readonly>
+                            </div>
+                            <div class="form-group mt-4">
+                                <label for="end-date" class="block mb-2 font-medium">End Date</label>
+                                <input type="text" id="end-date" class="form-control" readonly>
+                            </div>
+                            <div class="form-group mt-4">
+                                <label for="reason" class="block mb-2 font-medium">Reason for Leave</label>
+                                <textarea id="reason" class="form-control" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="mt-4 btn btn-primary"><i class="fas fa-check"></i> Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Applied Leaves Section -->
+            <section id="applied-leaves" class="py-10">
+                <div class="container mx-auto px-4">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-semibold mb-4">Applied Leaves</h2>
+                        <table class="table">
+                            <thead class="bg-gray-200 text-gray-700">
+                                <tr>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                    <th scope="col">Reason</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-07-01</td>
+                                    <td>2024-07-05</td>
+                                    <td>Medical</td>
+                                    <td>Approved</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
+    <!-- Bootstrap JS and Font Awesome JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const currentMonthDisplay = document.getElementById('currentMonth');
-            const currentYearDisplay = document.getElementById('currentYear');
-            const calendarBody = document.querySelector('tbody');
+        // Initialize calendar with current month and year
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let startDate = null;
+        let endDate = null;
 
-            let currentMonth = new Date().getMonth(); // Get current month (0 - January, 1 - February, ..., 11 - December)
-            let currentYear = new Date().getFullYear(); // Get current year
+        function updateCalendar() {
+            const daysElement = document.querySelector('.calendar .days');
+            daysElement.innerHTML = '';
 
-            const months = [
+            const monthYearElement = document.querySelector('.calendar .month-year');
+            monthYearElement.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
+
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const startingDay = firstDay.getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Populate calendar days
+            for (let i = 0; i < startingDay; i++) {
+                let emptyElement = document.createElement('div');
+                daysElement.appendChild(emptyElement);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                let dayElement = document.createElement('div');
+                dayElement.classList.add('day', 'border', 'border-gray-300', 'cursor-pointer');
+                dayElement.textContent = day;
+                daysElement.appendChild(dayElement);
+
+                // Highlight weekends
+                let dayOfWeek = (startingDay + day - 1) % 7;
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayElement.classList.add('weekend');
+                }
+
+                // Highlight selected range
+                if (startDate && endDate) {
+                    let selectedDate = new Date(currentYear, currentMonth, day);
+                    if (selectedDate >= startDate && selectedDate <= endDate) {
+                        dayElement.classList.add('selected-range');
+                    }
+                }
+
+                // Mark start and end dates
+                if (startDate && day === startDate.getDate() && currentMonth === startDate.getMonth() && currentYear === startDate.getFullYear()) {
+                    dayElement.classList.add('start-date');
+                }
+
+                if (endDate && day === endDate.getDate() && currentMonth === endDate.getMonth() && currentYear === endDate.getFullYear()) {
+                    dayElement.classList.add('end-date');
+                }
+
+                dayElement.addEventListener('click', function () {
+                    handleDayClick(day);
+                });
+            }
+        }
+
+        // Handle day click event to select start and end dates
+        function handleDayClick(day) {
+            let selectedDate = new Date(currentYear, currentMonth, day);
+
+            if (!startDate || (startDate && endDate)) {
+                startDate = selectedDate;
+                endDate = null;
+            } else if (selectedDate < startDate) {
+                startDate = selectedDate;
+            } else {
+                endDate = selectedDate;
+            }
+
+            document.getElementById('start-date').value = startDate ? startDate.toISOString().split('T')[0] : '';
+            document.getElementById('end-date').value = endDate ? endDate.toISOString().split('T')[0] : '';
+
+            updateCalendar();
+        }
+
+        // Function to get month name
+        function getMonthName(monthIndex) {
+            const monthNames = [
                 'January', 'February', 'March', 'April', 'May', 'June',
                 'July', 'August', 'September', 'October', 'November', 'December'
             ];
+            return monthNames[monthIndex];
+        }
 
-            let startDate = null;
-            let endDate = null;
-
-            function renderCalendar(month, year) {
-                const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get number of days in the month
-                const firstDay = new Date(year, month, 1).getDay(); // Get the first day of the month (0 - Sunday, 1 - Monday, ..., 6 - Saturday)
-
-                calendarBody.innerHTML = ''; // Clear previous calendar
-
-                let date = 1;
-                for (let i = 0; i < 6; i++) {
-                    const row = calendarBody.insertRow();
-                    for (let j = 0; j < 7; j++) {
-                        if (i === 0 && j < firstDay) {
-                            const cell = row.insertCell();
-                            cell.classList.add('p-2');
-                        } else if (date > daysInMonth) {
-                            break;
-                        } else {
-                            const cell = row.insertCell();
-                            cell.classList.add('p-2', 'calendar-cell');
-                            cell.textContent = date;
-                            date++;
-                        }
-                    }
-                }
-                currentMonthDisplay.textContent = months[month];
-                currentYearDisplay.textContent = year;
+        // Initialize calendar
+        document.querySelector('.calendar .prev').addEventListener('click', function () {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
             }
-
-            renderCalendar(currentMonth, currentYear);
-
-            // Event listeners for navigation icons
-            document.getElementById('prevMonth').addEventListener('click', function () {
-                currentMonth--;
-                if (currentMonth < 0) {
-                    currentMonth = 11;
-                    currentYear--;
-                }
-                renderCalendar(currentMonth, currentYear);
-            });
-
-            document.getElementById('nextMonth').addEventListener('click', function () {
-                currentMonth++;
-                if (currentMonth > 11) {
-                    currentMonth = 0;
-                    currentYear++;
-                }
-                renderCalendar(currentMonth, currentYear);
-            });
-
-            // Event listener for selecting dates
-            calendarBody.addEventListener('click', function (event) {
-                const target = event.target;
-                if (target.classList.contains('calendar-cell')) {
-                    const selectedDate = parseInt(target.textContent);
-                    if (!startDate) {
-                        startDate = selectedDate;
-                        target.classList.add('start-date');
-                    } else if (!endDate) {
-                        endDate = selectedDate;
-                        target.classList.add('end-date');
-                        markDatesInRange(startDate, endDate);
-                    } else {
-                        clearSelection();
-                        startDate = selectedDate;
-                        target.classList.add('start-date');
-                    }
-                }
-            });
-
-            function markDatesInRange(start, end) {
-                const cells = document.querySelectorAll('.calendar-cell');
-                cells.forEach(cell => {
-                    const date = parseInt(cell.textContent);
-                    if (date > start && date < end) {
-                        cell.classList.add('in-range');
-                    }
-                });
-            }
-
-            function clearSelection() {
-                const selectedCells = document.querySelectorAll('.calendar-cell.start-date, .calendar-cell.end-date, .calendar-cell.in-range');
-                selectedCells.forEach(cell => {
-                    cell.classList.remove('start-date', 'end-date', 'in-range');
-                });
-                startDate = null;
-                endDate = null;
-            }
-
-            // Submit leave functionality (dummy example)
-            const submitLeaveButton = document.getElementById('submitLeave');
-            submitLeaveButton.addEventListener('click', function () {
-                const method = document.getElementById('method').value;
-                const leaveType = document.getElementById('leave-type').value;
-                const reason = document.getElementById('reason').value;
-                alert(`Leave Submitted:\nMethod: ${method}\nLeave Type: ${leaveType}\nReason: ${reason}`);
-                clearSelection();
-            });
+            updateCalendar();
         });
+
+        document.querySelector('.calendar .next').addEventListener('click', function () {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendar();
+        });
+
+        updateCalendar();
     </script>
 </body>
 
