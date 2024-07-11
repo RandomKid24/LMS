@@ -17,7 +17,7 @@
             max-width: 400px;
             margin: auto;
         }
-
+    
         .calendar .header {
             background-color: #4CAF50;
             color: white;
@@ -26,25 +26,25 @@
             font-size: 18px;
             font-weight: bold;
         }
-
+    
         .calendar .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-
+    
         .calendar .prev,
         .calendar .next {
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
+    
         .calendar .prev:hover,
         .calendar .next:hover {
             background-color: #ddd;
         }
-
+    
         .calendar .days {
             display: grid;
             grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -53,7 +53,7 @@
             border-radius: 5px;
             overflow: hidden;
         }
-
+    
         .calendar .day {
             padding: 12px 0;
             text-align: center;
@@ -61,19 +61,26 @@
             transition: background-color 0.3s ease;
             border: 1px solid transparent;
         }
-
+    
         .calendar .day:hover {
             background-color: #e2e8f0;
         }
-
+    
         .calendar .selected-range {
             background-color: #bee3f8; /* Light blue background for selected range */
         }
-
+    
         .calendar .weekend {
             color: red;
         }
+    
+        .calendar .start-date,
+        .calendar .end-date {
+            background-color: #4CAF50;
+            color: white;
+        }
     </style>
+    
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -107,14 +114,23 @@
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-semibold mb-4">Apply for Leave</h2>
                         <form>
-                            <div class="form-group">
-                                <label for="start-date" class="block mb-2 font-medium">Start Date</label>
-                                <input id="start-date" type="date" class="form-control">
-                            </div>
-                            <div class="form-group mt-4">
-                                <label for="end-date" class="block mb-2 font-medium">End Date</label>
-                                <input id="end-date" type="date" class="form-control">
-                            </div>
+                            <section id="calendar" class="py-10">
+                                <div class="container mx-auto px-4">
+                                    <div class="bg-white rounded-lg shadow-md p-6">
+                                        <div class="calendar">
+                                            <div class="header bg-green-500 text-white py-2 rounded-t-lg">
+                                                <div class="navigation flex justify-between items-center px-4">
+                                                    <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
+                                                    <div class="month-year text-lg font-semibold"></div>
+                                                    <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
+                                                </div>
+                                            </div>
+                                            <div class="days grid grid-cols-7 gap-1 py-2">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
                             <div class="form-group mt-4">
                                 <label for="reason" class="block mb-2 font-medium">Reason for Leave</label>
                                 <textarea id="reason" class="form-control" rows="3"></textarea>
@@ -152,24 +168,7 @@
                 </div>
             </section>
 
-            <!-- Calendar Section -->
-            <section id="calendar" class="py-10">
-                <div class="container mx-auto px-4">
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <div class="calendar">
-                            <div class="header bg-green-500 text-white py-2 rounded-t-lg">
-                                <div class="navigation flex justify-between items-center px-4">
-                                    <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
-                                    <div class="month-year text-lg font-semibold"></div>
-                                    <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
-                                </div>
-                            </div>
-                            <div class="days grid grid-cols-7 gap-1 py-2">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            
         </div>
     </div>
 
@@ -182,60 +181,73 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-
+    
         // Variables to store selected start and end dates
         let startDate = null;
         let endDate = null;
-
+    
         // Function to update calendar when month or year changes
         function updateCalendar() {
             let monthYearText = `${getMonthName(currentMonth)} ${currentYear}`;
             document.querySelector('.calendar .month-year').textContent = monthYearText;
-
+    
             let daysElement = document.querySelector('.calendar .days');
             daysElement.innerHTML = '';
-
+    
             // Get the first day of the current month
             let firstDay = new Date(currentYear, currentMonth, 1);
             let startingDay = firstDay.getDay();
-
+    
             // Get number of days in the current month
             let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
+    
             // Create day elements for the calendar
             for (let i = 0; i < startingDay; i++) {
                 let emptyDay = document.createElement('div');
                 emptyDay.classList.add('day', 'text-center', 'py-2', 'text-gray-400');
                 daysElement.appendChild(emptyDay);
             }
-
+    
             for (let day = 1; day <= daysInMonth; day++) {
                 let dayElement = document.createElement('div');
                 dayElement.classList.add('day', 'text-center', 'py-2', 'cursor-pointer', 'transition', 'duration-300', 'ease-in-out', 'border', 'border-transparent', 'hover:bg-gray-200');
                 dayElement.textContent = day;
-
+    
+                // Highlight selected start date and end date
+                if (startDate && day === startDate.getDate() && currentMonth === startDate.getMonth() && currentYear === startDate.getFullYear()) {
+                    dayElement.classList.add('start-date');
+                }
+                if (endDate && day === endDate.getDate() && currentMonth === endDate.getMonth() && currentYear === endDate.getFullYear()) {
+                    dayElement.classList.add('end-date');
+                }
+    
                 // Highlight selected range of dates
-                if (startDate && endDate && day >= startDate.getDate() && day <= endDate.getDate()) {
+                if (startDate && endDate && selectedDateInRange(new Date(currentYear, currentMonth, day))) {
                     dayElement.classList.add('selected-range');
                 }
-
+    
                 // Highlight today's date
                 if (currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day === currentDate.getDate()) {
                     dayElement.classList.add('bg-green-200', 'rounded-full');
                 }
-
+    
                 dayElement.addEventListener('click', function () {
                     handleDateSelection(day);
                 });
-
+    
                 daysElement.appendChild(dayElement);
             }
         }
-
+    
+        // Function to check if a date is within the selected range
+        function selectedDateInRange(date) {
+            return date >= startDate && date <= endDate;
+        }
+    
         // Function to handle date selection
         function handleDateSelection(day) {
             let selectedDate = new Date(currentYear, currentMonth, day);
-
+    
             if (!startDate || (startDate && endDate)) {
                 // Selecting start date or resetting selection
                 startDate = selectedDate;
@@ -251,29 +263,29 @@
                 startDate = selectedDate;
                 endDate = null;
             }
-
+    
             updateCalendar();
             updateLeaveForm();
         }
-
+    
         // Function to update the Leave Form fields with selected dates
         function updateLeaveForm() {
             let startDateInput = document.getElementById('start-date');
             let endDateInput = document.getElementById('end-date');
-
+    
             if (startDate) {
                 startDateInput.value = formatDate(startDate);
             } else {
                 startDateInput.value = '';
             }
-
+    
             if (endDate) {
                 endDateInput.value = formatDate(endDate);
             } else {
                 endDateInput.value = '';
             }
         }
-
+    
         // Function to format date as YYYY-MM-DD
         function formatDate(date) {
             let year = date.getFullYear();
@@ -281,13 +293,13 @@
             let day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-
+    
         // Function to get month name from index
         function getMonthName(monthIndex) {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             return months[monthIndex];
         }
-
+    
         // Function to go to previous month
         function prevMonth() {
             currentMonth--;
@@ -297,7 +309,7 @@
             }
             updateCalendar();
         }
-
+    
         // Function to go to next month
         function nextMonth() {
             currentMonth++;
@@ -307,14 +319,15 @@
             }
             updateCalendar();
         }
-
+    
         // Attach click event listeners to navigation buttons
         document.querySelector('.calendar .prev').addEventListener('click', prevMonth);
         document.querySelector('.calendar .next').addEventListener('click', nextMonth);
-
+    
         // Initial calendar update
         updateCalendar();
     </script>
+    
 </body>
 
 </html>
