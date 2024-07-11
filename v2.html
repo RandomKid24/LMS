@@ -17,7 +17,7 @@
             max-width: 400px;
             margin: auto;
         }
-    
+
         .calendar .header {
             background-color: #4CAF50;
             color: white;
@@ -26,25 +26,25 @@
             font-size: 18px;
             font-weight: bold;
         }
-    
+
         .calendar .navigation {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-    
+
         .calendar .prev,
         .calendar .next {
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-    
+
         .calendar .prev:hover,
         .calendar .next:hover {
             background-color: #ddd;
         }
-    
+
         .calendar .days {
             display: grid;
             grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -53,7 +53,7 @@
             border-radius: 5px;
             overflow: hidden;
         }
-    
+
         .calendar .day {
             padding: 12px 0;
             text-align: center;
@@ -61,26 +61,37 @@
             transition: background-color 0.3s ease;
             border: 1px solid transparent;
         }
-    
+
         .calendar .day:hover {
             background-color: #e2e8f0;
         }
-    
+
         .calendar .selected-range {
-            background-color: #bee3f8; /* Light blue background for selected range */
+            background-color: #bee3f8;
+            /* Light blue background for selected range */
         }
-    
+
         .calendar .weekend {
             color: red;
         }
-    
+
         .calendar .start-date,
         .calendar .end-date {
             background-color: #4CAF50;
             color: white;
         }
+
+        .calendar .day-names {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            text-align: center;
+            font-weight: bold;
+            padding: 5px 0;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+        }
     </style>
-    
 </head>
 
 <body class="bg-gray-100 font-sans">
@@ -92,9 +103,15 @@
                     <i class="fas fa-user"></i> User Dashboard
                 </div>
                 <nav class="mt-6">
-                    <a href="#leave-form" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-calendar-plus"></i> Apply Leave</a>
-                    <a href="#applied-leaves" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-clipboard-list"></i> Applied Leaves</a>
-                    <a href="#calendar" class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i class="fas fa-calendar"></i> Calendar</a>
+                    <a href="#leave-form"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-calendar-plus"></i> Apply Leave</a>
+                    <a href="#applied-leaves"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-clipboard-list"></i> Applied Leaves</a>
+                    <a href="#calendar"
+                        class="block py-2 px-4 rounded-md text-gray-200 hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"><i
+                            class="fas fa-calendar"></i> Calendar</a>
                 </nav>
             </div>
         </div>
@@ -113,24 +130,38 @@
                 <div class="container mx-auto px-4">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-semibold mb-4">Apply for Leave</h2>
-                        <form>
-                            <section id="calendar" class="py-10">
-                                <div class="container mx-auto px-4">
-                                    <div class="bg-white rounded-lg shadow-md p-6">
-                                        <div class="calendar">
-                                            <div class="header bg-green-500 text-white py-2 rounded-t-lg">
-                                                <div class="navigation flex justify-between items-center px-4">
-                                                    <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
-                                                    <div class="month-year text-lg font-semibold"></div>
-                                                    <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
-                                                </div>
-                                            </div>
-                                            <div class="days grid grid-cols-7 gap-1 py-2">
+                        <form id="leave-form">
+                            <div class="calendar-container mb-4">
+                                <section id="calendar" class="py-10">
+                                    <div class="calendar">
+                                        <div class="header bg-green-500 text-white py-2 rounded-t-lg">
+                                            <div class="navigation flex justify-between items-center px-4">
+                                                <div class="prev text-lg cursor-pointer"><i class="fas fa-chevron-left"></i></div>
+                                                <div class="month-year text-lg font-semibold"></div>
+                                                <div class="next text-lg cursor-pointer"><i class="fas fa-chevron-right"></i></div>
                                             </div>
                                         </div>
+                                        <div class="day-names">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="days grid grid-cols-7 gap-1 py-2"></div>
                                     </div>
-                                </div>
-                            </section>
+                                </section>
+                            </div>
+                            <div class="form-group">
+                                <label for="start-date" class="block mb-2 font-medium">Start Date</label>
+                                <input type="text" id="start-date" class="form-control" readonly>
+                            </div>
+                            <div class="form-group mt-4">
+                                <label for="end-date" class="block mb-2 font-medium">End Date</label>
+                                <input type="text" id="end-date" class="form-control" readonly>
+                            </div>
                             <div class="form-group mt-4">
                                 <label for="reason" class="block mb-2 font-medium">Reason for Leave</label>
                                 <textarea id="reason" class="form-control" rows="3"></textarea>
@@ -167,8 +198,6 @@
                     </div>
                 </div>
             </section>
-
-            
         </div>
     </div>
 
@@ -181,153 +210,116 @@
         let currentDate = new Date();
         let currentMonth = currentDate.getMonth();
         let currentYear = currentDate.getFullYear();
-    
+
         // Variables to store selected start and end dates
         let startDate = null;
         let endDate = null;
-    
+
         // Function to update calendar when month or year changes
         function updateCalendar() {
             let monthYearText = `${getMonthName(currentMonth)} ${currentYear}`;
             document.querySelector('.calendar .month-year').textContent = monthYearText;
-    
+
             let daysElement = document.querySelector('.calendar .days');
             daysElement.innerHTML = '';
-    
+
             // Get the first day of the current month
             let firstDay = new Date(currentYear, currentMonth, 1);
             let startingDay = firstDay.getDay();
-    
+
             // Get number of days in the current month
             let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    
-            // Create day elements for the calendar
+
+            // Populate calendar days
             for (let i = 0; i < startingDay; i++) {
-                let emptyDay = document.createElement('div');
-                emptyDay.classList.add('day', 'text-center', 'py-2', 'text-gray-400');
-                daysElement.appendChild(emptyDay);
+                let emptyElement = document.createElement('div');
+                daysElement.appendChild(emptyElement);
             }
-    
+
             for (let day = 1; day <= daysInMonth; day++) {
                 let dayElement = document.createElement('div');
-                dayElement.classList.add('day', 'text-center', 'py-2', 'cursor-pointer', 'transition', 'duration-300', 'ease-in-out', 'border', 'border-transparent', 'hover:bg-gray-200');
+                dayElement.classList.add('day', 'border', 'border-gray-300', 'cursor-pointer');
                 dayElement.textContent = day;
-    
-                // Highlight selected start date and end date
+                daysElement.appendChild(dayElement);
+
+                // Highlight weekends
+                let dayOfWeek = (startingDay + day - 1) % 7;
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayElement.classList.add('weekend');
+                }
+
+                // Highlight selected range
+                if (startDate && endDate) {
+                    let selectedDate = new Date(currentYear, currentMonth, day);
+                    if (selectedDate >= startDate && selectedDate <= endDate) {
+                        dayElement.classList.add('selected-range');
+                    }
+                }
+
+                // Mark start and end dates
                 if (startDate && day === startDate.getDate() && currentMonth === startDate.getMonth() && currentYear === startDate.getFullYear()) {
                     dayElement.classList.add('start-date');
                 }
+
                 if (endDate && day === endDate.getDate() && currentMonth === endDate.getMonth() && currentYear === endDate.getFullYear()) {
                     dayElement.classList.add('end-date');
                 }
-    
-                // Highlight selected range of dates
-                if (startDate && endDate && selectedDateInRange(new Date(currentYear, currentMonth, day))) {
-                    dayElement.classList.add('selected-range');
-                }
-    
-                // Highlight today's date
-                if (currentYear === currentDate.getFullYear() && currentMonth === currentDate.getMonth() && day === currentDate.getDate()) {
-                    dayElement.classList.add('bg-green-200', 'rounded-full');
-                }
-    
+
                 dayElement.addEventListener('click', function () {
-                    handleDateSelection(day);
+                    handleDayClick(day);
                 });
-    
-                daysElement.appendChild(dayElement);
             }
         }
-    
-        // Function to check if a date is within the selected range
-        function selectedDateInRange(date) {
-            return date >= startDate && date <= endDate;
-        }
-    
-        // Function to handle date selection
-        function handleDateSelection(day) {
+
+        // Handle day click event to select start and end dates
+        function handleDayClick(day) {
             let selectedDate = new Date(currentYear, currentMonth, day);
-    
+
             if (!startDate || (startDate && endDate)) {
-                // Selecting start date or resetting selection
                 startDate = selectedDate;
                 endDate = null;
-            } else if (startDate && !endDate && selectedDate > startDate) {
-                // Selecting end date
+            } else if (selectedDate < startDate) {
+                startDate = selectedDate;
+            } else {
                 endDate = selectedDate;
-            } else if (startDate && endDate && selectedDate < startDate) {
-                // Switching start date
-                startDate = selectedDate;
-            } else if (startDate && endDate && selectedDate >= startDate) {
-                // Resetting selection
-                startDate = selectedDate;
-                endDate = null;
             }
-    
+
+            document.getElementById('start-date').value = startDate ? startDate.toISOString().split('T')[0] : '';
+            document.getElementById('end-date').value = endDate ? endDate.toISOString().split('T')[0] : '';
+
             updateCalendar();
-            updateLeaveForm();
         }
-    
-        // Function to update the Leave Form fields with selected dates
-        function updateLeaveForm() {
-            let startDateInput = document.getElementById('start-date');
-            let endDateInput = document.getElementById('end-date');
-    
-            if (startDate) {
-                startDateInput.value = formatDate(startDate);
-            } else {
-                startDateInput.value = '';
-            }
-    
-            if (endDate) {
-                endDateInput.value = formatDate(endDate);
-            } else {
-                endDateInput.value = '';
-            }
-        }
-    
-        // Function to format date as YYYY-MM-DD
-        function formatDate(date) {
-            let year = date.getFullYear();
-            let month = (date.getMonth() + 1).toString().padStart(2, '0');
-            let day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-    
-        // Function to get month name from index
+
+        // Function to get month name
         function getMonthName(monthIndex) {
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            return months[monthIndex];
+            const monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+            return monthNames[monthIndex];
         }
-    
-        // Function to go to previous month
-        function prevMonth() {
+
+        // Initialize calendar
+        document.querySelector('.calendar .prev').addEventListener('click', function () {
             currentMonth--;
             if (currentMonth < 0) {
                 currentMonth = 11;
                 currentYear--;
             }
             updateCalendar();
-        }
-    
-        // Function to go to next month
-        function nextMonth() {
+        });
+
+        document.querySelector('.calendar .next').addEventListener('click', function () {
             currentMonth++;
             if (currentMonth > 11) {
                 currentMonth = 0;
                 currentYear++;
             }
             updateCalendar();
-        }
-    
-        // Attach click event listeners to navigation buttons
-        document.querySelector('.calendar .prev').addEventListener('click', prevMonth);
-        document.querySelector('.calendar .next').addEventListener('click', nextMonth);
-    
-        // Initial calendar update
+        });
+
         updateCalendar();
     </script>
-    
 </body>
 
 </html>
